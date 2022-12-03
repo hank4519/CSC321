@@ -1,0 +1,128 @@
+
+
+Name: Hank Tsai 
+
+I worked individually, no team members. 
+ssh bandit01@bandit.labs.overthewire.org -p 2220
+
+0-1: cat readme 
+NH2SXQwcBdpmTEzi3bvBHMM9H66vVXjL
+
+1-2: cat ./- 
+rRGizSaX8Mk1RTb1CNQoXTcYZWU6lgzi
+
+2-3: use " " quotes 
+aBZ0W5EmUfAf7kHTQeOwd8bauFJ2lAiG
+
+3-4: use -a flag, and cat 
+2EW7BBsr6aMMoJ2HjW067dm8EgX26xNe
+
+4-5: file ./-file0* and cat ./-file07
+lrIWWI6bB37kxfiCQZqUdOIYfr6eEeqR
+
+5-6: find -size 1033c and cat ./maybehere07/.file2
+P4L4vucdmLnm8I7Vl7jG1ApGSfjYKqJU
+
+6-7: at root: find -group bandit6 -user bandit7 -size 33c
+     cat ./var/lib/dpkg/info/bandit7.password
+z7WtoNQU2XfjmMtWA8u5rN4vzqu4v99S
+
+7-8: cat data.txt | grep millionth
+TESKZC0XvTetK0S9xNwm25STk5iWrBvP
+
+8-9: sort and find unique one: sort data.txt | uniq -u
+EN632PlfYiZbn3PhVK3XOGSlNInNE00t
+
+9-10: converts to string
+cat data.txt | strings | grep ^==
+G7w8LIi6J3kTb8A7j9LgrywtEUlyyp6s
+
+10-11: use base64 and decode it (base64 --decode)
+6zPeziLdR2RKNdNYFNb6nVCKzphlXHBM
+
+11-12: A is 13 chars away from N, use tr 
+cat data.txt | tr '[A-Za-z]' '[N-ZA-Mn-za-m]'
+JVNBBFSmZwKKOP0XbFXOoW8chDz5yVRv
+
+12-13 
+mkdir /tmp/l12, cp and cd 
+use xxd, gunzip/bunzip2, tar -xf 
+wbWdlBxEir4CaE8LaPhauuOo6pwRmrDw
+
+13-14 
+ssh -i sshkey.private bandit14@bandit.labs.overthewire.org -p 2220
+fGrHPx402xGC7U7rXKDaxiWFTOiF0ENq
+
+14-15
+do nc localhost 30000 and enter the current password
+jN2kgmIXJ6fShzhT2avhotn4Zcka6tnt 
+
+15-16
+openssl s_client -connect localhost:30001 and enter current password
+JQttfApK4SeyHwDlI9SXGR50qclOAil1
+
+16-17
+nmap localhost -p 31000-32000 gives 2 hosts
+openssl s_client -connect localhost:31790 gives a provate key and cat to l17.key 
+chmod & ssh -i /tmp/l16/l17.key bandit17@bandit.labs.overthewire.org -p 2220
+cd /etc/bandit_pass/ to retrieve password
+VwOSWtCA7lRKkTfbr2IDh6awj9RNZM5e
+
+17-18
+use diff
+hga5tuuCLF6fFzUpnagiMN8ssu9LFrdg
+
+18-19
+Was logged out. Used "ls" & "cat readme" right after the ssh command 
+awhqfNnAbc1naukrpqDYcF95h7HoMTrC
+
+19-20
+run ./bandit20-do receives a hint 
+run ls -la, and bandit20 is the only accepted user 
+./bandit20-do cat /etc/bandit_pass/bandit20
+VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+
+20-21 
+open a port: nc -l 1345 
+connect port: ./suconnect 1345
+enter current password in the opened port 
+NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+
+21-22 
+cd to /etc/cron.d 
+cat cronjob_bandit22 & cat /usr/bin/cronjob_bandit22.sh, then cat output file
+WdDozAdTM2z9DiFEQ2mGlwngMfj4EZff
+
+22-23 
+same as the last level
+run mytarget command from the cronjob_bandit23.sh output 
+change myname to bandit23, run the echo command. 
+cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+QYw0Y2aiA672PsMmh9puTQuhoz8SyR2G
+
+23-24
+make dir and give permission. 
+edit pass.sh with cat etc/bandit_pass/bandit24 > /tmp/tmp23/pass.txt
+cp tmp/tmp23/pass.sh /var/spool/bandit24/foo & cat /tmp/tmp23/pass.txt
+VAfGXJ1PBSsPSnvsjI8p759leLZ9GGar
+
+24-25
+do a for loop: 
+for i in {0000..9999};do echo VAfGXJ1PBSsPSnvsjI8p759leLZ9GGar $i>>list;done
+cat list | nc localhost 30002 | uniq gives the password 
+p7TaowMYrmu23Ol8hiZh9UvD0O9hpx8d
+
+25-26 
+find out bandit26 uses showtext: cat /etc/passwd | grep bandit26 
+and cat usr/bin/showtext 
+we see 'more' command was used, shrink the command window
+and do :r /etc/bandit_pass/bandit26 
+c7GvcKlw9mC7aUQaPx7nwFstuAIBw1o1
+
+26-27
+in shinked terminal window. Do :!sh switch to bash 
+and run ./bandit27-do, gets a hint 
+./bandit27-do cat /etc/bandit_pass/bandit27
+YnQpBuifNMas1hcUFk70ZmqkhUU2EuaS
+
+

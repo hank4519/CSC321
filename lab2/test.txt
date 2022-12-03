@@ -1,0 +1,129 @@
+from base64 import b64decode, b64encode
+import urllib.parse
+
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+from Crypto.Util.Padding import pad, unpad
+
+
+class lab2:
+
+    def __init__(self, file_name: str) -> None:
+        self.file_name = file_name
+
+        self.key = get_random_bytes(16)
+        self.iv = get_random_bytes(16)
+
+        self.bmp_header = []
+        self.b_arr_ecb = []
+        self.b_arr_cbc = []
+        self.b_arr_submit = []
+
+    def pkcs7padding(self, data, block_size=16):
+        if len(data) >= 16:
+            return data
+        if type(data) != bytearray and type(data) != bytes:
+            raise TypeError("Only support bytearray/bytes !")
+        pl = block_size - (len(data) % block_size)
+        return data + bytearray([pl for i in range(pl)])
+
+    def write_to_file(self, file_name: str, num: int = 1) -> None:
+        with open(file_name, "wb") as file:
+            file.write(self.bmp_header)
+            if num == 1:
+                [file.write(block) for block in self.b_arr_cbc]
+            else:
+                [file.write(block) for block in self.b_arr_ecb]
+            file.close()
+
+    def ecb(self) -> None:
+        with open(self.file_name, "rb") as file:
+            self.bmp_header = file.read(56)
+
+            cipher = AES.new(self.key, AES.MODE_ECB)
+            while (data := file.read(16)):
+                data = self.pkcs7padding(data, AES.block_size)
+                ciphertext = cipher.encrypt(data)
+                self.b_arr_ecb.append(ciphertext)
+
+            file.close()
+
+def cbc(self) -> None:
+    with open(self.file_name, "rb") as file:
+        self.bmp_header = file.read(56)
+        prev_iv = self.iv
+        while (data := file.read(16)):
+            data = self.pkcs7padding(data)
+            data_xor_iv = bytes([_a ^ _b for _a, _b in zip(data, prev_iv)])
+            cipher = AES.new(self.key, AES.MODE_ECB)
+            ciphertext = cipher.encrypt(data_xor_iv)
+            self.b_arr_cbc.append(ciphertext)
+            prev_iv = ciphertext
+
+        file.close()
+
+    def submit(self, user_input: str) -> str:
+    initial_str = "userid=456;userdata=" + user_input + ";session-id=31337"
+        encoded_str = urllib.parse.quote(initial_str, safe='')
+        n = 16
+        sixteen_b_arr = [self.pkcs7padding(bytearray(encoded_str[i:i+n], encoding='utf8'))
+                         for i in range(0, len(encoded_str), n)]
+
+        prev_iv = self.iv
+        ciphertext_arr = []
+        for data in sixteen_b_arr:
+            data_xor_iv = bytes([_a ^ _b for _a, _b in zip(data, prev_iv)])
+            cipher = AES.new(self.key, AES.MODE_ECB)
+            ciphertext = cipher.encrypt(data_xor_iv)
+            prev_iv = ciphertext
+            ciphertext_arr.append(ciphertext)
+
+        flipped_bit = self.flip_bit(ciphertext_arr)
+
+        return flipped_bit
+
+    def verify(self, user_input) -> bool:
+        prev_iv = self.iv
+        result_str = ''
+        for ciphertext in user_input:
+            cipher = AES.new(self.key, AES.MODE_ECB)
+            message = cipher.decrypt(ciphertext)
+            message_xor_iv = bytes([_a ^ _b for _a, _b in zip(message, prev_iv)])
+            prev_iv = ciphertext
+            result_str += message_xor_iv.decode('utf-8')
+
+        print(result_str)
+        return ';admin=True;' in result_str
+
+    def encrypt(self, data):
+        data = "userid=456;userdata=" + data + ";session-id=31337"
+        self.cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
+        return b64encode(self.iv + self.cipher.encrypt(pad(data.encode('utf-8'),
+                                                           AES.block_size)))
+
+    def decrypt(self, data):
+        raw = b64decode(data)
+        self.cipher = AES.new(self.key, AES.MODE_CBC, raw[:AES.block_size])
+        return unpad(self.cipher.decrypt(raw[AES.block_size:]), AES.block_size)
+
+def bitFlip(pos, bit, data):
+    raw = b64decode(data)
+    tmp_list = list(raw)
+    tmp_list[pos] = tmp_list[pos] ^ bit
+    return b64encode(bytes(tmp_list))
+
+
+if __name__ == "__main__":
+    lab2 = lab2("cp-logo.bmp")
+
+    # lab2.cbc()
+    # lab2.write_to_file('cbc.bmp', 1)
+
+    # lab2.ecb()
+    # lab2.write_to_file('ebc.bmp', 2)
+
+    result = lab2.encrypt("Yo what is upAadmindATrueA")
+    result = bitFlip(45, 122, result)
+    result = bitFlip(40, 124, result)
+    result = bitFlip(33, 122, result)
+    print(lab2.decrypt(result))
